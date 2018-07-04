@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# ------------ config section ------------ #
+ssh_private_key_file=pz400.pem # key file; leave this line empty is use password
+#remote_user=ec2-user  # user for ssh login
+remote_user=centos  # user for ssh login
+#become_user=root     # user to run sudo, normally is "root"
+become_user=centos     # user to run sudo, normally is "root"
+org_id=1
+sys_id=1
+token=0f320e7db4a2d8ba0a3229753bf7c90d821479da
+metric=123.206.91.96
+alertd=https://123.206.91.96:8080/_alertd
+os=RedHat # allowed values: Debian | Ubuntu | RedHat
+# ---------------------------------------- #
+
+update=""
+if [[ "$#" == 1 && $1 == "-update" ]]; then
+   update="update=1"
+fi
+
+connect="--ask-pass --ask-become-pass"
+if [[ -n ${ssh_private_key_file} ]]; then
+  connect="--private-key=${ssh_private_key_file}"
+fi
+
+ansible-playbook agent_setup.yaml -v -i hosts ${connect} --user=${remote_user} --become-user=${become_user} --extra-vars "org_id=${org_id} sys_id=${sys_id} token=${token} metric=${metric} alertd=${alertd} os=${os} ${update}"
+#./altenv/bin/ansible-playbook agent_setup.yaml -v -i hosts ${connect} --user=${remote_user} --become-user=${become_user} --extra-vars "org_id=${org_id} sys_id=${sys_id} token=${token} metric=${metric} alertd=${alertd} os=${os} ${update}"
+
