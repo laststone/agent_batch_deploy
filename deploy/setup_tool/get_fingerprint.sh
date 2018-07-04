@@ -1,4 +1,4 @@
-for line in `cat hosts | awk -F ' ' '{print $1}'`
+for line in `cat hosts-1 | awk -F ' ' '{print $1}'`
 #for line in `cat hosts`
         do
                 ssh-keyscan $line
